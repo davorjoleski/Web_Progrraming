@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>WP Exam</title>
+</head>
+<body>
+
+<div>
+    <!-- The form below should invoke the method ApplicationsController.listAll -->
+    <form id="filter-form">
+        <label for="years">Years</label>
+        <input id="years" type="number" name="years"/>
+        <label for="applicationType">Type</label>
+        <select id="applicationType" name="applicationType">
+            <option value="">All</option>
+            <!-- For each applicationType you should have one <option> like below  -->
+            <option th:each="appt:${apptype}" th:value="${appt}" th:text="${appt.name}">[applicationType]</option>
+        </select>
+        <button id="filter" type="submit">Filter</button>
+    </form>
+    <div>
+
+        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+
+        <!-- Applications Controller.showAdd -->
+        <a href="/applications/add" class="add-item">
+            Add new application
+        </a>
+        </th:block>
+    </div>
+    <table>
+        <tr>
+            <th>Application Name</th>
+            <th>Origin Story</th>
+            <th>Date of Creation</th>
+            <th>Type</th>
+            <th>Scientist</th>
+            <th>Votes</th>
+            <th>Actions</th>
+        </tr>
+        <!-- For each app you should have one <tr> like below -->
+        <tr class="item" th:each="app:${applications}">
+            <td th:text="${app.name}">[app.name]</td>
+            <td th:text="${app.originStory}">[app.originStory]</td>
+            <td th:text="${app.dateCreated}">[app.dateCreated]</td>
+            <td th:text="${app.applicationType}">[app.applicationType]</td>
+            <td th:text="${app.scientist.name}">[app.scientist.name]</td>
+            <td th:text="${app.votes}">[app.votes]</td>
+            <td>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+
+                <!-- ApplicationsController.delete -->
+                <form th:method="POST" th:action="@{'/applications/delete/{id}' (id=${app.id})}">
+                    <button type="submit" class="delete-item">Delete</button>
+                </form>
+                </th:block>
+                <!-- ApplicationsController.showEdit -->
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+
+                <a th:href="@{'/applications/edit/{id}' (id=${app.id})}" class="edit-item">Edit</a>
+                </th:block>
+                    <!-- ApplicationsController.vote -->
+                <th:block sec:authorize="hasRole('ROLE_USER')">
+
+                <form th:method="POST" th:action="@{'/applications/vote/{id}' (id=${app.id})}">
+                    <button type="submit" class="like-item">Vote</button>
+                </form>
+                </th:block>
+            </td>
+        </tr>
+    </table>
+
+</div>
+<div>
+    <ul id="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</div>
+</body>
+</html>
