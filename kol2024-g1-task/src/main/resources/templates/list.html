@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>WP Exam</title>
+</head>
+<body>
+
+<div>
+    <!-- The form below should invoke the method SongsController.listAll -->
+    <form id="filter-form">
+        <label for="years">Years</label>
+        <input id="years" type="number" name="years"/>
+        <label for="genre">Genre</label>
+        <select id="genre" name="genre">
+            <option value="">All</option>
+            <!-- For each genre you should have one <option> like below  -->
+            <option th:each="genre:${genre}" th:value="${genre} " th:text="${genre.name}">[genre]</option>
+        </select>
+        <button id="filter" type="submit">Filter</button>
+    </form>
+    <div>
+        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+
+            <!-- SongsController.showAdd -->
+            <a href="/songs/add" class="add-item">
+                Add new song
+            </a>
+        </th:block>
+    </div>
+    <table>
+        <tr>
+            <th>Song name</th>
+            <th>Origin Story</th>
+            <th>Date of Creation</th>
+            <th>Genre</th>
+            <th>Artist</th>
+            <th>Votes</th>
+            <th>Actions</th>
+        </tr>
+        <!-- For each song you should have one <tr> like below -->
+        <tr class="item" th:each="song :${songs}">
+            <td th:text="${song.name}">[song.name]</td>
+            <td th:text="${song.originStory}">[song.originStory]</td>
+            <td th:text="${song.dateCreated}">[song.dateCreated]</td>
+            <td th:text="${song.genre}">[song.genre]</td>
+            <td th:text="${song.artist.name}">[song.artist.name]</td>
+            <td th:text="${song.votes}">[song.votes]</td>
+            <td>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+
+                    <!-- SongsController.delete -->
+                    <form th:method="POST" th:action="@{'/songs/delete/{id}' (id=${song.id})}">
+                        <button type="submit" class="delete-item">Delete</button>
+                    </form>
+                </th:block>
+                <!-- SongsController.showEdit -->
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+
+                    <a th:href="@{'/songs/edit/{id}' (id=${song.id})}" class="edit-item">Edit</a>
+                </th:block>
+                <!-- SongsController.vote -->
+                <th:block sec:authorize="hasRole('ROLE_USER')">
+
+                <form th:method="POST" th:action="@{'/songs/vote/{id}' (id=${song.id})}">
+                    <button type="submit" class="like-item">Vote</button>
+                </form>
+
+                </th:block>
+            </td>
+        </tr>
+    </table>
+
+</div>
+<div>
+    <ul id="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</div>
+</body>
+</html>
