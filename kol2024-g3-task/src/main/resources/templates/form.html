@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>WP Exam</title>
+</head>
+<body>
+<!-- The form should submit to PresentationsController.create or PresentationsController.update,
+     depending on whether we are creating or editing an application -->
+<form th:method="post" th:action="@{ ${presen != null} ? '/presentations/' + ${presen.id} : '/presentations' }">
+    <div>
+        <label for="name">Presentation Name</label>
+        <input type="text"
+               id="name"
+               name="name"
+               th:value="${presen?.name}"
+               required>
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <input type="text"
+               id="description"
+               name="description"
+               th:value="${presen?.description}"
+
+               required>
+    </div>
+    <div>
+        <label for="datePresented">Date of Presentation</label>
+        <input type="date"
+               id="datePresented"
+               name="datePresented"
+               th:value="${presen?.datePresented}"
+
+               required>
+    </div>
+    <div>
+        <label for="presentationType">Type</label><br/>
+        <select id="presentationType" name="presentationType" multiple="multiple" size="5">
+            <!-- For each presentationType you should have one <option> like below  -->
+            <option th:each="ty:${presty}" th:value="${ty}" th:text="${ty.name}"
+
+            th:selected="${presen?.presentationType == ty}"
+            >[presentationType]</option>
+        </select>
+    </div>
+    <div>
+        <label>Scientist</label><br/>
+        <select id="scientist" name="scientist" multiple="multiple" size="5">
+            <!-- For each scientist you should have one <option> like below  -->
+            <option  th:each="pr:${scientist}" th:value="${pr.id}" th:text="${pr.name}"
+
+            th:selected="${presen?.scientist == pr}"
+
+            >[scientist.name]</option>
+        </select>
+    </div>
+
+    <button id="submit" type="submit">Submit</button>
+    <a id="back" href="/presentations" type="button" class="btn btn-primary">Back to presentations</a>
+</form>
+
+<div>
+    <ul id="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>WP Exam</title>
+</head>
+<body>
+
+<div>
+    <!-- The form below should invoke the method PresentationsController.listAll -->
+    <form id="filter-form">
+        <label for="years">Years</label>
+        <input id="years" type="number" name="years"/>
+        <label for="presentationType">Type</label>
+        <select id="presentationType" name="presentationType">
+            <option value="">ALL</option>
+            <option  th:each="ty:${prestype}" th:value="${ty}" th:text="${ty.name}" >All</option>
+            <!-- For each presentationType you should have one <option> like below  -->
+        </select>
+        <button id="filter" type="submit">Filter</button>
+    </form>
+    <div>
+
+        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+
+        <!-- PresentationsController.showAdd -->
+        <a href="/presentations/add" class="add-item">
+            Add new Presentation
+        </a>
+        </th:block>
+    </div>
+    <table>
+        <tr>
+            <th>Presentation Name</th>
+            <th>Description</th>
+            <th>Date of Presentation</th>
+            <th>Type</th>
+            <th>Scientist</th>
+            <th>Votes</th>
+            <th>Actions</th>
+        </tr>
+        <!-- For each app you should have one <tr> like below -->
+        <tr class="item"  th:each="pres:${present}" >
+            <td th:text="${pres.name}">[app.name]</td>
+            <td th:text="${pres.description}">[app.description]</td>
+            <td th:text="${pres.datePresented}">[app.datePresented]</td>
+            <td th:text="${pres.presentationType}">[app.presentationType]</td>
+            <td th:text="${pres.scientist.name}">[app.scientist.name]</td>
+            <td th:text="${pres.votes}">[app.votes]</td>
+            <td>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+
+                <!-- PresentationsController.delete -->
+                <form th:method="POST" th:action="@{'/presentations/delete/{id}' (id=${pres.id})}">
+                    <button type="submit" class="delete-item">Delete</button>
+                </form>
+                </th:block>
+
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+
+                <!-- PresentationsController.showEdit -->
+                <a th:href="@{'/presentations/edit/{id}' (id=${pres.id})  }" class="edit-item">Edit</a>
+                </th:block>
+                <!-- PresentationsController.vote -->
+                <th:block sec:authorize="hasRole('ROLE_USER')">
+
+                <form th:method="POST" th:action="@{'/presentations/vote/{id}' (id=${pres.id})}">
+                    <button type="submit" class="like-item">Vote</button>
+
+                </form>
+                </th:block>
+            </td>
+        </tr>
+    </table>
+
+</div>
+<div>
+    <ul id="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</div>
+</body>
+</html>
